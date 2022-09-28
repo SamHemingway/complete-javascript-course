@@ -1,3 +1,5 @@
 {
+  "prettier.default-config.tabWidth" : 4,
+  "prettier.default-config.useTabs" : "Enable",
   "workspace.preview_server_allow_external" : true
 }
