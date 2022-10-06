@@ -39,12 +39,10 @@ game();
 function game() {
   resetDefault();
 
-  answer = calculateRandomNumber(1, 20);
-
   check.addEventListener('click', checkAnswer);
 }
 
-restartGame.addEventListener('click', game);
+restartGame.addEventListener('click', resetDefault);
 
 function calculateRandomNumber(min, max) {
   min = Math.ceil(min);
@@ -53,46 +51,50 @@ function calculateRandomNumber(min, max) {
 }
 
 function resetDefault() {
+  answer = calculateRandomNumber(1, 20);
+  check.disabled = false;
   guess.value = null;
   runningScore = 20;
-  score.innerText = runningScore;
+  score.textContent = runningScore;
   document.body.style.backgroundColor = '#222';
-  message.innerText = 'Start guessing...';
-  number.innerText = '?';
+  message.textContent = 'Start guessing...';
+  number.textContent = '?';
 }
 
 function checkAnswer() {
-  {
-    valueToCheck = guess.valueAsNumber;
+  valueToCheck = guess.valueAsNumber;
 
-    if (valueToCheck >= 1 && valueToCheck <= 20) {
-      guess.style.borderColor = 'white';
+  // Ensure valid input
+  if (!valueToCheck || (valueToCheck < 1 && valueToCheck > 20)) {
+    message.textContent =
+      'Oops! You need to give a number between 1 and 20. Please try again!';
 
-      number.innerText = valueToCheck;
+    guess.style.borderColor = 'red';
+  } else {
+    guess.style.borderColor = 'white';
 
-      if (valueToCheck === answer) {
-        score.innerText = runningScore;
-        message.innerText = '🎉 Correct number!';
-        document.body.style.backgroundColor = 'green';
+    number.textContent = valueToCheck;
 
-        if (runningScore > highscore.innerText) {
-          highscore.innerText = runningScore;
-        }
-      } else {
-        runningScore--;
-        score.innerText = runningScore;
+    if (valueToCheck === answer) {
+      score.textContent = runningScore;
+      message.textContent = '🎉 Correct number!';
+      document.body.style.backgroundColor = 'green';
 
-        if (valueToCheck > answer) {
-          message.innerText = '📈 Too high!';
-        } else {
-          message.innerText = '📉 Too low!';
-        }
+      if (runningScore > highscore.textContent) {
+        highscore.textContent = runningScore;
       }
     } else {
-      message.innerText =
-        'Oops! You need to give a number between 1 and 20. Please try again!';
+      runningScore--;
+      score.textContent = runningScore;
 
-      guess.style.borderColor = 'red';
+      if (runningScore <= 0) {
+        message.textContent = '❌ Game over!';
+        check.disabled = true;
+      } else if (valueToCheck > answer) {
+        message.textContent = '📈 Too high!';
+      } else {
+        message.textContent = '📉 Too low!';
+      }
     }
   }
 }
